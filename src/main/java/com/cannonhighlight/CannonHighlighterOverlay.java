@@ -53,8 +53,7 @@ public class CannonHighlighterOverlay extends Overlay {
     private static final Color TEXT_COLOR = Color.WHITE;
     private static final NumberFormat TIME_LEFT_FORMATTER = DecimalFormat.getInstance(Locale.US);
     private static final int MAX_DISTANCE = 2500;
-    private final ArrayList<LocalPoint> cannonDoubleHitSpots = new ArrayList<>();
-    private final ArrayList<LocalPoint> cannonNeverHitSpots = new ArrayList<>();
+
 
     enum HittableType {
         UNHITTABLE,
@@ -83,6 +82,10 @@ public class CannonHighlighterOverlay extends Overlay {
 
     @Override
     public Dimension render(Graphics2D graphics) {
+        if (plugin.getCannonPosition() == null || !plugin.isCannonPlaced()) {
+            return null;
+        }
+
         LocalPoint cannonPoint = LocalPoint.fromWorld(client, plugin.getCannonPosition());
         LocalPoint localLocation = client.getLocalPlayer().getLocalLocation();
 
@@ -103,7 +106,7 @@ public class CannonHighlighterOverlay extends Overlay {
                 int x = npcLocalPoint.getX() - ((size - 1) * Perspective.LOCAL_TILE_SIZE / 2);
                 int y = npcLocalPoint.getY() - ((size - 1) * Perspective.LOCAL_TILE_SIZE / 2);
 
-                for (LocalPoint doubleHitSpot : cannonDoubleHitSpots) {
+                for (LocalPoint doubleHitSpot : plugin.cannonDoubleHitSpots) {
                     if (Math.abs(doubleHitSpot.getX() - x) < 64 && Math.abs(doubleHitSpot.getY() - y) < 64) {
                         if(config.highlightHull() || config.highlightSouthWestTile() || config.drawNames()){
                             renderNpcOverlay(graphics, npc, HittableType.DOUBLE);
@@ -113,7 +116,7 @@ public class CannonHighlighterOverlay extends Overlay {
                     }
                 }
                 if (!marked) {
-                    for (LocalPoint neverHitSpot : cannonNeverHitSpots) {
+                    for (LocalPoint neverHitSpot : plugin.cannonNeverHitSpots) {
                         if (Math.abs(neverHitSpot.getX() - x) < 64 && Math.abs(neverHitSpot.getY() - y) < 64) {
                             if(config.highlightHull() || config.highlightSouthWestTile() || config.drawNames()) {
                                 renderNpcOverlay(graphics, npc, HittableType.UNHITTABLE);
@@ -139,7 +142,7 @@ public class CannonHighlighterOverlay extends Overlay {
      * @param startTile The position of the cannon
      */
     private void drawDoubleHitSpots(Graphics2D graphics, LocalPoint startTile) {
-        cannonNeverHitSpots.add(new LocalPoint(startTile.getX(), startTile.getY()));
+        plugin.cannonNeverHitSpots.add(new LocalPoint(startTile.getX(), startTile.getY()));
         for (int x = -3; x <= 3; x++) {
             for (int y = -3; y <= 3; y++) {
                 if (y != 1 && x != 1 && y != -1 && x != -1) {
@@ -163,8 +166,8 @@ public class CannonHighlighterOverlay extends Overlay {
 
                 //Add Uncannonable Tiles (0 hit areas)
                 if (Math.abs(y) <= 1 && x == 0 || Math.abs(x) <= 1 && y == 0) {
-                    if (cannonNeverHitSpots.size() < 5) {
-                        cannonNeverHitSpots.add(marker);
+                    if (plugin.cannonNeverHitSpots.size() < 5) {
+                        plugin.cannonNeverHitSpots.add(marker);
                     }
                     if(config.showHitZones()) {
                         OverlayUtil.renderPolygon(graphics, poly, Color.red);
@@ -176,8 +179,8 @@ public class CannonHighlighterOverlay extends Overlay {
                 if(config.showHitZones()) {
                     OverlayUtil.renderPolygon(graphics, poly, Color.green);
                 }
-                if (cannonDoubleHitSpots.size() < 16) {
-                    cannonDoubleHitSpots.add(marker);
+                if (plugin.cannonDoubleHitSpots.size() < 16) {
+                    plugin.cannonDoubleHitSpots.add(marker);
                 }
             }
         }

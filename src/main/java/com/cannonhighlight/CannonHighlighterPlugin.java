@@ -32,6 +32,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
+import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameObjectSpawned;
@@ -44,6 +45,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -60,10 +62,10 @@ public class CannonHighlighterPlugin extends Plugin
 	private NPC[] cachedNPCs = {};
 
 	@Getter(AccessLevel.PACKAGE)
-	private boolean cannonPlaced;
+	private boolean cannonPlaced = false;
 
 	@Getter(AccessLevel.PACKAGE)
-	private WorldPoint cannonPosition;
+	private WorldPoint cannonPosition = null;
 
 	@Inject
 	private Client client;
@@ -77,6 +79,8 @@ public class CannonHighlighterPlugin extends Plugin
 	@Inject
 	private OverlayManager overlayManager;
 
+	ArrayList<LocalPoint> cannonDoubleHitSpots = new ArrayList<>();
+	ArrayList<LocalPoint> cannonNeverHitSpots = new ArrayList<>();
 
 	@Override
 	protected void startUp() throws Exception
@@ -90,6 +94,8 @@ public class CannonHighlighterPlugin extends Plugin
 		overlayManager.remove(npcOverlay);
 		cannonPlaced = false;
 		cannonPosition = null;
+		cannonNeverHitSpots.clear();
+		cannonDoubleHitSpots.clear();
 	}
 
 	@Subscribe
@@ -131,6 +137,9 @@ public class CannonHighlighterPlugin extends Plugin
 				|| event.getMessage().contains("Your cannon has decayed. Speak to Nulodion to get a new one!"))
 		{
 			cannonPlaced = false;
+			cannonPosition = null;
+			cannonNeverHitSpots.clear();
+			cannonDoubleHitSpots.clear();
 		}
 	}
 

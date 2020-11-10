@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2016-2018, Seth <Sethtroll3@gmail.com>
  * Copyright (c) 2018, James Swindle <wilingua@gmail.com>
  * Copyright (c) 2018, Adam <Adam@sigterm.info>
  * Copyright (c) 2020, ConorLeckey <https://github.com/ConorLeckey>
@@ -170,14 +171,14 @@ public class CannonHighlighterOverlay extends Overlay {
                         plugin.cannonNeverHitSpots.add(marker);
                     }
                     if(config.showHitZones()) {
-                        OverlayUtil.renderPolygon(graphics, poly, Color.red);
+                        OverlayUtil.renderPolygon(graphics, poly, config.unhittableColor());
                     }
                     continue;
                 }
 
                 //Add double tiles (2 hit areas)
                 if(config.showHitZones()) {
-                    OverlayUtil.renderPolygon(graphics, poly, Color.green);
+                    OverlayUtil.renderPolygon(graphics, poly, config.doubleColor());
                 }
                 if (plugin.cannonDoubleHitSpots.size() < 16) {
                     plugin.cannonDoubleHitSpots.add(marker);
@@ -192,15 +193,15 @@ public class CannonHighlighterOverlay extends Overlay {
 
         switch (hittableType) {
             case UNHITTABLE:
-                color = Color.red;
+                color = config.unhittableColor();
                 text = "Unhittable";
                 break;
             case SINGLE:
-                color = Color.yellow;
+                color = config.singleColor();
                 text = "Single";
                 break;
             case DOUBLE:
-                color = Color.green;
+                color = config.doubleColor();
                 text = "Double";
         }
 

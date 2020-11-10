@@ -24,13 +24,21 @@
  */
 package com.cannonhighlight;
 
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.*;
+
+import java.awt.*;
 
 @ConfigGroup("cannonhighlight")
 public interface CannonHighlighterConfig extends Config
 {
+	@ConfigSection(
+			name = "Colors",
+			description = "Colors'",
+			position = 2,
+			closedByDefault = true
+	)
+	String colorSection = "colorSection";
+
 	@ConfigItem(
 		keyName = "drawNames",
 		name = "Draw Status Names",
@@ -69,5 +77,41 @@ public interface CannonHighlighterConfig extends Config
 	default boolean showHitZones()
 	{
 		return true;
+	}
+
+	@Alpha
+	@ConfigItem(
+			keyName = "unhittableColor",
+			name = "Unhittable Color",
+			section = colorSection,
+			position = 1,
+			description = "Configures the color used for unhittable npcs and tiles"
+	)
+	default Color unhittableColor() {
+		return Color.red;
+	}
+
+	@Alpha
+	@ConfigItem(
+			keyName = "singleColor",
+			name = "Single Hit Color",
+			section = colorSection,
+			position = 2,
+			description = "Configures the color used for single hittable npcs and tiles"
+	)
+	default Color singleColor() {
+		return Color.yellow;
+	}
+
+	@Alpha
+	@ConfigItem(
+			keyName = "doubleColor",
+			name = "Double Hit Color",
+			section = colorSection,
+			position = 3,
+			description = "Configures the color used for double hittable npcs and tiles"
+	)
+	default Color doubleColor() {
+		return Color.green;
 	}
 }

@@ -58,6 +58,9 @@ import static net.runelite.api.ObjectID.CANNON_BASE;
 )
 public class CannonHighlighterPlugin extends Plugin
 {
+//	ID for the shattered relics cannon transmog is 43029
+	@Getter(AccessLevel.PACKAGE)
+	private static final int CANNON_BASE_OR=43029;
 	@Getter(AccessLevel.PACKAGE)
 	private NPC[] cachedNPCs = {};
 
@@ -110,7 +113,7 @@ public class CannonHighlighterPlugin extends Plugin
 		GameObject gameObject = event.getGameObject();
 
 		Player localPlayer = client.getLocalPlayer();
-		if (gameObject.getId() == CANNON_BASE && !cannonPlaced)
+		if ( (gameObject.getId() == CANNON_BASE && !cannonPlaced) || (gameObject.getId() == CANNON_BASE_OR && !cannonPlaced) )
 		{
 			if (localPlayer.getWorldLocation().distanceTo(gameObject.getWorldLocation()) <= 2
 					&& localPlayer.getAnimation() == AnimationID.BURYING_BONES)

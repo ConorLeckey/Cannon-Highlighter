@@ -49,9 +49,6 @@ import java.util.Locale;
 import static net.runelite.api.Perspective.LOCAL_TILE_SIZE;
 
 public class CannonHighlighterOverlay extends Overlay {
-    // Anything but white text is quite hard to see since it is drawn on
-    // a dark background
-    private static final Color TEXT_COLOR = Color.WHITE;
     private static final NumberFormat TIME_LEFT_FORMATTER = DecimalFormat.getInstance(Locale.US);
     private static final int MAX_DISTANCE = 2500;
 

@@ -51,6 +51,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 
 import static net.runelite.api.ObjectID.CANNON_BASE;
+import static net.runelite.api.ObjectID.CANNON_BASE_43029;
 
 @Slf4j
 @PluginDescriptor(
@@ -108,9 +109,10 @@ public class CannonHighlighterPlugin extends Plugin
 	public void onGameObjectSpawned(GameObjectSpawned event)
 	{
 		GameObject gameObject = event.getGameObject();
+		int placedObjectId = gameObject.getId();
 
 		Player localPlayer = client.getLocalPlayer();
-		if (gameObject.getId() == CANNON_BASE && !cannonPlaced)
+		if ((placedObjectId == CANNON_BASE || placedObjectId == CANNON_BASE_43029) && !cannonPlaced)
 		{
 			if (localPlayer.getWorldLocation().distanceTo(gameObject.getWorldLocation()) <= 2
 					&& localPlayer.getAnimation() == AnimationID.BURYING_BONES)

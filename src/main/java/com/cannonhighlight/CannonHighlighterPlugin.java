@@ -36,19 +36,13 @@ import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameObjectSpawned;
-import net.runelite.api.events.GameStateChanged;
-import net.runelite.api.events.GameTick;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.regex.Matcher;
 
 import static net.runelite.api.ObjectID.CANNON_BASE;
 import static net.runelite.api.ObjectID.CANNON_BASE_43029;
@@ -59,9 +53,6 @@ import static net.runelite.api.ObjectID.CANNON_BASE_43029;
 )
 public class CannonHighlighterPlugin extends Plugin
 {
-	@Getter(AccessLevel.PACKAGE)
-	private NPC[] cachedNPCs = {};
-
 	@Getter(AccessLevel.PACKAGE)
 	private boolean cannonPlaced = false;
 
@@ -97,12 +88,6 @@ public class CannonHighlighterPlugin extends Plugin
 		cannonPosition = null;
 		cannonNeverHitSpots.clear();
 		cannonDoubleHitSpots.clear();
-	}
-
-	@Subscribe
-	public void onGameTick(GameTick event)
-	{
-		cachedNPCs = client.getCachedNPCs();
 	}
 
 	@Subscribe

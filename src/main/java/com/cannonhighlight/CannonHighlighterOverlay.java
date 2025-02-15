@@ -30,20 +30,15 @@ package com.cannonhighlight;
 import net.runelite.api.Point;
 import net.runelite.api.*;
 import net.runelite.api.coords.LocalPoint;
-import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayUtil;
-import net.runelite.client.ui.overlay.components.TextComponent;
-import net.runelite.client.util.Text;
 
 import javax.inject.Inject;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Locale;
 
 import static net.runelite.api.Perspective.LOCAL_TILE_SIZE;
@@ -67,7 +62,6 @@ public class CannonHighlighterOverlay extends Overlay {
     private final Client client;
     private final CannonHighlighterConfig config;
     private final CannonHighlighterPlugin plugin;
-    private final TextComponent textComponent = new TextComponent();
 
     @Inject
     CannonHighlighterOverlay(Client client, CannonHighlighterConfig config, CannonHighlighterPlugin plugin) {
@@ -84,7 +78,8 @@ public class CannonHighlighterOverlay extends Overlay {
             return null;
         }
 
-        LocalPoint cannonPoint = LocalPoint.fromWorld(client, plugin.getCannonPosition());
+        WorldView worldView = client.getTopLevelWorldView();
+        LocalPoint cannonPoint = LocalPoint.fromWorld(worldView, plugin.getCannonPosition());
         LocalPoint localLocation = client.getLocalPlayer().getLocalLocation();
 
         if (cannonPoint == null || !plugin.isCannonPlaced()) {
@@ -92,10 +87,10 @@ public class CannonHighlighterOverlay extends Overlay {
         }
 
         if (localLocation.distanceTo(cannonPoint) <= MAX_DISTANCE) {
-            drawDoubleHitSpots(graphics, cannonPoint);
+            drawDoubleHitSpots(graphics, cannonPoint, worldView);
         }
 
-        for (NPC npc : plugin.getCachedNPCs()) {
+        for (NPC npc : worldView.npcs()) {
             if (npc != null && npc.getCombatLevel() > 0) {
                 boolean marked = false;
 
@@ -139,8 +134,8 @@ public class CannonHighlighterOverlay extends Overlay {
      *
      * @param startTile The position of the cannon
      */
-    private void drawDoubleHitSpots(Graphics2D graphics, LocalPoint startTile) {
-        plugin.cannonNeverHitSpots.add(new LocalPoint(startTile.getX(), startTile.getY()));
+    private void drawDoubleHitSpots(Graphics2D graphics, LocalPoint startTile, WorldView wv) {
+        plugin.cannonNeverHitSpots.add(new LocalPoint(startTile.getX(), startTile.getY(), wv));
         for (int x = -3; x <= 3; x++) {
             for (int y = -3; y <= 3; y++) {
                 if (y != 1 && x != 1 && y != -1 && x != -1) {
@@ -150,7 +145,7 @@ public class CannonHighlighterOverlay extends Overlay {
                 int xPos = startTile.getX() - (x * LOCAL_TILE_SIZE);
                 int yPos = startTile.getY() - (y * LOCAL_TILE_SIZE);
 
-                LocalPoint marker = new LocalPoint(xPos, yPos);
+                LocalPoint marker = new LocalPoint(xPos, yPos, wv);
                 Polygon poly = Perspective.getCanvasTilePoly(client, marker);
 
                 if (poly == null) {
@@ -220,7 +215,7 @@ public class CannonHighlighterOverlay extends Overlay {
             int x = lp.getX() - ((size - 1) * Perspective.LOCAL_TILE_SIZE / 2);
             int y = lp.getY() - ((size - 1) * Perspective.LOCAL_TILE_SIZE / 2);
 
-            Polygon southWestTilePoly = Perspective.getCanvasTilePoly(client, new LocalPoint(x, y));
+            Polygon southWestTilePoly = Perspective.getCanvasTilePoly(client, new LocalPoint(x, y, actor.getWorldView()));
 
             renderPoly(graphics, color, southWestTilePoly);
         }

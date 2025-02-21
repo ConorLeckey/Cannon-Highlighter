@@ -30,20 +30,16 @@ package com.cannonhighlight;
 import net.runelite.api.Point;
 import net.runelite.api.*;
 import net.runelite.api.coords.LocalPoint;
-import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayUtil;
 import net.runelite.client.ui.overlay.components.TextComponent;
-import net.runelite.client.util.Text;
 
 import javax.inject.Inject;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Locale;
 
 import static net.runelite.api.Perspective.LOCAL_TILE_SIZE;
@@ -95,7 +91,7 @@ public class CannonHighlighterOverlay extends Overlay {
             drawDoubleHitSpots(graphics, cannonPoint);
         }
 
-        for (NPC npc : plugin.getCachedNPCs()) {
+        for (NPC npc : client.getTopLevelWorldView().npcs()) {
             if (npc != null && npc.getCombatLevel() > 0) {
                 boolean marked = false;
 

@@ -60,9 +60,6 @@ import static net.runelite.api.ObjectID.CANNON_BASE_43029;
 public class CannonHighlighterPlugin extends Plugin
 {
 	@Getter(AccessLevel.PACKAGE)
-	private NPC[] cachedNPCs = {};
-
-	@Getter(AccessLevel.PACKAGE)
 	private boolean cannonPlaced = false;
 
 	@Getter(AccessLevel.PACKAGE)
@@ -97,12 +94,6 @@ public class CannonHighlighterPlugin extends Plugin
 		cannonPosition = null;
 		cannonNeverHitSpots.clear();
 		cannonDoubleHitSpots.clear();
-	}
-
-	@Subscribe
-	public void onGameTick(GameTick event)
-	{
-		cachedNPCs = client.getCachedNPCs();
 	}
 
 	@Subscribe
